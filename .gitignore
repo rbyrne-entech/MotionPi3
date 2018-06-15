@@ -1,0 +1,6 @@
+bin/
+include/
+lib/python2.7/
+pip-selfcheck.json
+local/
+MotionPi/images/
