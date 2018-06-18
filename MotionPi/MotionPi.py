@@ -23,10 +23,13 @@ sensorId = "motion1"
 def take_a_pic(date_time):
     img="0"
     try:
-        camera = PiCamera()
         img = ('/home/pi/MotionPi3/MotionPi/images/%s.jpeg' % str(date_time))
 	#camera.capture(img, resize(320,240))
-	camera.capture(img)
+	camera = PiCamera()
+	camera.resolution = (640, 480)
+	camera.framerate = (24, 1)
+
+        camera.capture(img)
 	
         camera.close()       
         
@@ -54,13 +57,13 @@ def detect_motion(date_time):
                          break
                   if x==limit:
                          print("taking a pic")
-                         pic = take_a_pic(date_time)
+                         pic = take_a_pic(date_time1)
                          while i ==1:
                                 i = GPIO.input(11)
-                               # print("1")
+                                print("1")
                          return pic
                   i = GPIO.input(11)
-                  sleep(.1)
+                  #sleep(.2)
    
 if __name__ == "__main__":
     while True:
@@ -77,18 +80,19 @@ if __name__ == "__main__":
 #	    	    print(binPic)
                 except:
 			logging.warning("did not read picture")
+			binpic="0"
 		
 	    	jsonData = formatJson(deviceId , sensorId, str(date_time), binPic)
 		if jsonData == "0":
 			logging.warning("json invalid")    
             	result = postData(jsonData) 
-		    
-		#if result ==200:
-		 #        logging.info("Response: "+ result)
-	 	#else:
-		 #        logging.warning("Response "+ result)
+		
+		if result == 200:
+		         logging.info("Response: "+ str(result))
+	 	else:
+		         logging.warning("Response "+ str(result))
             except:
-		logging.warning("error sending data")
+		logging.warning("error sending data main")
                 pass 
         # log the error
         # If post data returns error save locally at somepoint
