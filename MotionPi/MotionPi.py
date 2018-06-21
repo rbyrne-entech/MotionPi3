@@ -7,6 +7,8 @@ from httpRequest import postData
 import sys
 import base64
 import logging
+from thread import start_new_thread
+
 
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BOARD)
@@ -56,7 +58,7 @@ def detect_motion():
                   if x==limit:
                          print("taking a pic")
                          pic = take_a_pic(date_time)
-                         hopethisworks(pic, date_time)
+                         start_new_thread(hopethisworks,(pic, date_time))
                          
                          while i ==1:
                              print("im here", datetime.datetime.now())
