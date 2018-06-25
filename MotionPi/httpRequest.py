@@ -26,7 +26,7 @@ def postData(json_Data):
 			return r.status_code
 	except:
 		logging.warning("error Posting data")
-
+                return 0
 
 def formatJson(piId,sensorId,dateTime, pic):
 	try:

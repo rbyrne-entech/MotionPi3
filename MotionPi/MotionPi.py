@@ -1,6 +1,9 @@
 from picamera import PiCamera
 from time import sleep
 import datetime
+import os
+import json
+import urllib2
 import RPi.GPIO as GPIO
 from  httpRequest import formatJson
 from httpRequest import postData
@@ -19,7 +22,7 @@ GPIO.setup(3, GPIO.OUT)         #LED output pin
 limit = 1
 deviceId = "motionPi1"
 sensorId = "motion1"
-
+fileName = "usbdrv/storage.txt"
 
 
 def take_a_pic(date_time):
@@ -82,16 +85,44 @@ def hopethisworks(pic, date_time):
 		
 	    	jsonData = formatJson(deviceId , sensorId, str(date_time), binPic)
 		if jsonData == "0":
-			logging.warning("json invalid")    
-            	result = postData(jsonData) 
+		    logging.warning("json invalid")    
+                if checkWifi() == True:
+                    result = postData(jsonData) 
 		
-		if result == 200:
-		         logging.info("Response: "+ str(result))
-	 	else:
-		         logging.warning("Response "+ str(result))
+		    if result == 200:
+                        with open(fileName,"a+") as f:
+                            line = f.readline().strip()
+                            while line:
+                                payload = json.loads(line)
+                                postData(payload)
+                                line = f.readline().strip()
+                            try:
+                                os.remove(fileName)
+                                print("file deleted")
+                            except OSError:
+                                pass
+		        logging.info("Response: "+ str(result))
+	 	    else:
+                        f = open(fileName,"a+")
+                        f.write(json.dumps(jsonData)) + "\r\n"
+                        f.close()
+                        print("stored because no api")
+		        logging.warning("Response "+ str(result))
+                else:
+                    f = open(fileName,"a+")
+                    f.write(json.dumps(jsonData) + "\r\n")
+                    f.close()
+                    print("stored becasue no wifi")
             except:
 		logging.warning("error sending data main")
-                pass 
+                pass
+
+def checkWifi():
+    try:
+        urllib.urlopen("http://187.72.116.35:4200", timeout=1)
+        return True
+    except urllib2.URLError as err:
+        return False
    
 if __name__ == "__main__":
     while True:
