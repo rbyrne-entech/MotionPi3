@@ -7,14 +7,14 @@ import logging
 
 
 
-urlPost = "http://34.239.113.101:8080/demo/addMotion"
+urlPost = "http://184.72.116.35:8080/demo/addMotion"
 urlLocal = "http://192.168.0.107:8080/demo/addMotion"
 
 
 def postData(json_Data):
 	logging.info("Posting Data")
         try:
-		r=requests.post(urlPost, json=json_Data)
+		r=requests.post(urlPost, json=json_Data, timeout = 30)
 	
 		if r.status_code == requests.codes.ok:
 			print("ok")

@@ -16,7 +16,7 @@ GPIO.setup(11, GPIO.IN)         #Read output from PIR motion sensor
 GPIO.setup(3, GPIO.OUT)         #LED output pin
 
 #thresholdof motion detecton events for whether or not to take a picture
-limit = 5
+limit = 1
 deviceId = "motionPi1"
 sensorId = "motion1"
 
