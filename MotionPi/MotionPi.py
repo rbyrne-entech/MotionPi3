@@ -130,7 +130,7 @@ def hopethisworks(pic, date_time):
 
 def checkWifi():
     try:
-        urllib2.urlopen("http://18.204.21.212:4200", timeout=1)
+        urllib2.urlopen("http://54.210.23.150:4200", timeout=1)
         return True
     except urllib2.URLError as err:
         return False

@@ -7,7 +7,7 @@ import logging
 
 
 
-urlPost = "http://18.204.21.212:8080/demo/addMotion"
+urlPost = "http://54.210.23.150:8080/demo/addMotion"
 urlLocal = "http://192.168.0.107:8080/demo/addMotion"
 
 
