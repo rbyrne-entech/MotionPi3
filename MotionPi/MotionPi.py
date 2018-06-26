@@ -95,6 +95,7 @@ def hopethisworks(pic, date_time):
 		    if result == 200:
                         
                         with FileLock(fileName):
+                            print("file locked")
                             f = open(fileName,"a+")
                             line = f.readline().strip()
                             while line:            
@@ -110,6 +111,7 @@ def hopethisworks(pic, date_time):
 		        logging.info("Response: "+ str(result))
 	 	    else:
                         with FileLock(fileName):
+                            print("file locked")
                             f = open(fileName,"a+")
                             f.write(json.dumps(jsonData) + "\r\n")
                             f.close()
@@ -117,6 +119,7 @@ def hopethisworks(pic, date_time):
 		        logging.warning("Response "+ str(result))
                 else:
                     with FileLock(fileName):
+                        print("file locked")
                         f = open(fileName,"a+")
                         f.write(json.dumps(jsonData) + "\r\n")
                         f.close()
