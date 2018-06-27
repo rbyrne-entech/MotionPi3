@@ -7,6 +7,7 @@ import urllib2
 import RPi.GPIO as GPIO
 from  httpRequest import formatJson
 from httpRequest import postData
+from filelock import FileLock
 import sys
 import base64
 import logging
@@ -93,32 +94,35 @@ def hopethisworks(pic, date_time):
 		
 		    if result == 200:
                         
-                        with open(fileName,"a+") as f:
+                        with FileLock(fileName):
+                            print("file locked")
+                            f = open(fileName,"a+")
                             line = f.readline().strip()
-                            while line:
-                    
+                            while line:            
                                 payload = json.loads(line)
                                 postData(payload)
                                 line = f.readline().strip()
-                            try:
-                                os.remove(fileName)
-                                print("file deleted")
-                            except OSError:
-                                pass
+                            f.close()
+                        try:
+                            os.remove(fileName)
+                            print("file deleted")
+                        except OSError:
+                            pass
 		        logging.info("Response: "+ str(result))
 	 	    else:
-                        print("opening file")
-                        f = open(fileName,"a+")
-                        print("opened file")
-                        f.write(json.dumps(jsonData) + "\r\n")
-                        print("wrote to file")
-                        f.close()
-                        print("stored because no api")
+                        with FileLock(fileName):
+                            print("file locked")
+                            f = open(fileName,"a+")
+                            f.write(json.dumps(jsonData) + "\r\n")
+                            f.close()
+                            print("stored because no api")
 		        logging.warning("Response "+ str(result))
                 else:
-                    f = open(fileName,"a+")
-                    f.write(json.dumps(jsonData) + "\r\n")
-                    f.close()
+                    with FileLock(fileName):
+                        print("file locked")
+                        f = open(fileName,"a+")
+                        f.write(json.dumps(jsonData) + "\r\n")
+                        f.close()
                     print("stored becasue no wifi")
             except:
 		logging.warning("error sending data main")
@@ -126,7 +130,7 @@ def hopethisworks(pic, date_time):
 
 def checkWifi():
     try:
-        urllib2.urlopen("http://184.72.116.35:4200", timeout=1)
+        urllib2.urlopen("http://54.210.23.150:4200", timeout=1)
         return True
     except urllib2.URLError as err:
         return False
