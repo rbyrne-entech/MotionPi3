@@ -12,6 +12,8 @@ import sys
 import base64
 import logging
 from thread import start_new_thread
+import cv2
+import numpy as np
 
 
 GPIO.setwarnings(False)
@@ -19,11 +21,12 @@ GPIO.setmode(GPIO.BOARD)
 GPIO.setup(11, GPIO.IN)         #Read output from PIR motion sensor
 GPIO.setup(3, GPIO.OUT)         #LED output pin
 
-#thresholdof motion detecton events for whether or not to take a picture
+#threshold of motion detecton events for whether or not to take a picture
 limit = 1
 deviceId = "motionPi1"
 sensorId = "motion1"
 fileName = "/home/pi/usbdrv/storage.txt"
+has_face = "0"
 
 
 def take_a_pic(date_time):
@@ -40,7 +43,19 @@ def take_a_pic(date_time):
 	logging.warning("Camera Close error")
 	camera.close()
     finally:
-        return img 
+        return img
+
+def detect_face(img):
+    img = cv2.imread(img)
+    detector = cv2.CascadeClassifier("face_detector.xml")
+    faces = detector.detecMultiScale(img, 1.3, 4)
+
+    for(x, y, w, h) in faces:
+        cv2.rectangel(img, (x, y), (x + w, y + h), (0, 255,0), 2)
+        has_face ="1"
+        print "has face"
+        return has face
+        
 
 def detect_motion():
     while True:
@@ -130,7 +145,7 @@ def hopethisworks(pic, date_time):
 
 def checkWifi():
     try:
-        urllib2.urlopen("http://54.210.23.150:4200", timeout=1)
+        urllib2.urlopen("http://54.210.23.150:4200", timeout=7)
         return True
     except urllib2.URLError as err:
         return False
