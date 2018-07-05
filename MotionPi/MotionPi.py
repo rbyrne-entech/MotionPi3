@@ -8,12 +8,13 @@ import RPi.GPIO as GPIO
 from  httpRequest import formatJson
 from httpRequest import postData
 from filelock import FileLock
+#import compareImgs as compare
 import sys
 import base64
 import logging
 from thread import start_new_thread
-import cv2
-import numpy as np
+#import cv2
+#import numpy as np
 
 
 GPIO.setwarnings(False)
@@ -44,18 +45,6 @@ def take_a_pic(date_time):
 	camera.close()
     finally:
         return img
-
-def detect_face(img):
-    img = cv2.imread(img)
-    detector = cv2.CascadeClassifier("face_detector.xml")
-    faces = detector.detecMultiScale(img, 1.3, 4)
-
-    for(x, y, w, h) in faces:
-        cv2.rectangel(img, (x, y), (x + w, y + h), (0, 255,0), 2)
-        has_face ="1"
-        print "has face"
-        return has face
-        
 
 def detect_motion():
     while True:
